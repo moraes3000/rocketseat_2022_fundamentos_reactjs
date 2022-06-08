@@ -1,32 +1,64 @@
+import { format, formatDistanceToNow } from 'date-fns'
+import ptBR from 'date-fns/locale/pt-BR'
+
 import { Avatar } from './Avatar'
 import { Comment } from './Comment'
+
 import styles from './Post.module.css'
 
-export function Post() {
+interface Author {
+  avatarURL: string;
+  name: string;
+  rule: string;
+}
+interface Content {
+  type: 'paragraph' | 'link';
+  content: string;
+}
+interface PostProps {
+  author: Author,
+  content: Content,
+  publishedAt: Date,
+}
+
+export function Post({ author, content, publishedAt }: PostProps) {
+  const publishDateFormatted = format(publishedAt, "d 'de' LLLL 'as' HH:mm'h'", {
+    locale: ptBR
+  })
+
+  const publishDateRelativeToNow = formatDistanceToNow(publishedAt, {
+    locale: ptBR,
+    addSuffix: true
+
+  })
   return (
     <article className={styles.post}>
       <header>
 
         <div className={styles.author}>
           <Avatar
-            src='https://avatars.githubusercontent.com/u/29808643?v=4'
+            src={author.avatarURL}
           />
           <div className={styles.authorInfo}>
-            <strong>Bruno Moraes</strong>
-            <span>Web Developer</span>
+            <strong>{author.name}</strong>
+            <span>{author.rule}</span>
           </div>
         </div>
 
-        <time title='07 de junho as 22:30' dateTime='2022-06-07 22:30'>Publicado a 1 hora</time>
+        <time title={publishDateFormatted} dateTime={publishedAt.toISOString()}>
+          {publishDateRelativeToNow}
+        </time>
       </header>
       <div className={styles.content}>
-        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellendus, vero? Tempore temporibus
-        </p>
-        <p>
-          <a href='#'>#novoprojeto</a>
-          <a href='#'>#nlw</a>
-          <a href='#'>#rocketseat</a>
-        </p>
+
+        {content.map(line => {
+          if (line.type == 'paragraph') {
+            return <p key={line.content}>{line.content}</p>
+          }
+          else if (line.type == 'link') {
+            return <p key={line.content}><a href='#'>{line.content}</a></p>
+          }
+        })}
       </div>
 
       <form className={styles.commentForm}>
@@ -40,8 +72,7 @@ export function Post() {
       </form>
       <div className={styles.commentList}>
         <Comment />
-        <Comment />
-        <Comment />
+
       </div>
     </article >
 
