@@ -30,6 +30,8 @@ export function Post({ author, content, publishedAt }: PostProps) {
   const [comments, setComments] = useState([
     'Post 1'
   ])
+  const isNewCommentInputEmpty = newCommentText.length == 0
+
   const publishDateFormatted = format(publishedAt, "d 'de' LLLL 'as' HH:mm'h'", {
     locale: ptBR
   })
@@ -37,7 +39,6 @@ export function Post({ author, content, publishedAt }: PostProps) {
   const publishDateRelativeToNow = formatDistanceToNow(publishedAt, {
     locale: ptBR,
     addSuffix: true
-
   })
 
   function handleCreateNewComment(event: FormEvent) {
@@ -48,6 +49,7 @@ export function Post({ author, content, publishedAt }: PostProps) {
   }
 
   function handleNewCommentChange(event: ChangeEvent<HTMLTextAreaElement>) {
+    event.target.setCustomValidity('')
     setNewCommentText(event.target.value);
   }
 
@@ -58,6 +60,12 @@ export function Post({ author, content, publishedAt }: PostProps) {
     })
     setComments(commentsWithoutDeletedOne)
   }
+
+  function handleNewCommentInvalid(event) {
+    event.target.setCustomValidity('Esse campo é obrigatório!!')
+  }
+
+
   return (
     <article className={styles.post}>
       <header>
@@ -93,12 +101,15 @@ export function Post({ author, content, publishedAt }: PostProps) {
 
         <textarea className=''
           name='comment'
+          placeholder='Deixe o seu comentário'
           value={newCommentText}
           onChange={handleNewCommentChange}
-          placeholder='Deixe o seu comentário' />
+          onInvalid={handleNewCommentInvalid}
+          required
+        />
 
         <footer>
-          <button type='submit'>Publicar</button>
+          <button type='submit' disabled={isNewCommentInputEmpty}>Publicar</button>
         </footer>
       </form>
 
