@@ -1,6 +1,6 @@
 import { format, formatDistanceToNow } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
-import { FormEvent, useState } from 'react'
+import { ChangeEvent, FormEvent, useState } from 'react'
 
 import { Avatar } from './Avatar'
 import { Comment } from './Comment'
@@ -25,8 +25,10 @@ interface PostProps {
 
 
 export function Post({ author, content, publishedAt }: PostProps) {
+  const [newCommentText, setNewCommentText] = useState('')
+
   const [comments, setComments] = useState([
-    1
+    'Post 1'
   ])
   const publishDateFormatted = format(publishedAt, "d 'de' LLLL 'as' HH:mm'h'", {
     locale: ptBR
@@ -38,9 +40,16 @@ export function Post({ author, content, publishedAt }: PostProps) {
 
   })
 
-  function handleCreateNewComment(e: FormEvent) {
-    e.preventDefault()
-    setComments([...comments, comments.length + 1])
+  function handleCreateNewComment(event: FormEvent) {
+    event.preventDefault()
+
+    setComments([...comments, newCommentText])
+    setNewCommentText('')
+
+  }
+
+  function handleNewCommentChange(event: ChangeEvent<HTMLTextAreaElement>) {
+    setNewCommentText(event.target.value);
   }
   return (
     <article className={styles.post}>
@@ -75,21 +84,23 @@ export function Post({ author, content, publishedAt }: PostProps) {
       <form className={styles.commentForm} onSubmit={handleCreateNewComment}>
         <strong>Deixe o seu feedback</strong>
 
-        <textarea className='' placeholder='Deixe o seu comentário' />
+        <textarea className=''
+          name='comment'
+          value={newCommentText}
+          onChange={handleNewCommentChange}
+          placeholder='Deixe o seu comentário' />
 
         <footer>
           <button type='submit'>Publicar</button>
         </footer>
       </form>
+
       <div className={styles.commentList}>
-
         {comments.map((comment) => {
-          return <Comment key={comment} />
+          return <Comment key={comment} content={comment} />
         })}
-
-
       </div>
-    </article >
 
+    </article >
   )
 } 
