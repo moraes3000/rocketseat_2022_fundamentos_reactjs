@@ -18,7 +18,7 @@ interface Content {
 }
 interface PostProps {
   author: Author,
-  content: Content,
+  content: Content[],
   publishedAt: Date,
 }
 
@@ -53,7 +53,7 @@ export function Post({ author, content, publishedAt }: PostProps) {
     setNewCommentText(event.target.value);
   }
 
-  function deleteComment(commentToDelete) {
+  function deleteComment(commentToDelete: string) {
     // console.log(`Deletar comentário ${commentToDelete}`)
     const commentsWithoutDeletedOne = comments.filter(comment => {
       return comment != commentToDelete;
@@ -61,7 +61,7 @@ export function Post({ author, content, publishedAt }: PostProps) {
     setComments(commentsWithoutDeletedOne)
   }
 
-  function handleNewCommentInvalid(event) {
+  function handleNewCommentInvalid(event: ChangeEvent<HTMLTextAreaElement>) {
     event.target.setCustomValidity('Esse campo é obrigatório!!')
   }
 
