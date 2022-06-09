@@ -4,9 +4,13 @@ import styles from './Comment.module.css'
 
 interface CommentProps {
   content: string
+
 }
 
-export function Comment({ content }: CommentProps) {
+export function Comment({ content, onDeleteComment }) {
+  function handleDeleteComment() {
+    onDeleteComment(content)
+  }
   return (
     <div className={styles.comment}>
       <Avatar
@@ -20,14 +24,14 @@ export function Comment({ content }: CommentProps) {
               <strong>Bruno Moraes</strong>
               <time title='07 de junho as 22:30' dateTime='2022-06-07 22:30'>Cerca de 1 hora atrás</time>
             </div>
-            <button title='Deletar Comentário'>
+            <button onClick={handleDeleteComment} title='Deletar Comentário'>
               <Trash size={24} />
             </button>
           </header>
           <p>{content}</p>
         </div>
         <footer>
-          <button>
+          <button >
             <ThumbsUp size={20} /> Aplaudir <span>20</span>
           </button>
         </footer>

@@ -45,11 +45,18 @@ export function Post({ author, content, publishedAt }: PostProps) {
 
     setComments([...comments, newCommentText])
     setNewCommentText('')
-
   }
 
   function handleNewCommentChange(event: ChangeEvent<HTMLTextAreaElement>) {
     setNewCommentText(event.target.value);
+  }
+
+  function deleteComment(commentToDelete) {
+    // console.log(`Deletar comentário ${commentToDelete}`)
+    const commentsWithoutDeletedOne = comments.filter(comment => {
+      return comment != commentToDelete;
+    })
+    setComments(commentsWithoutDeletedOne)
   }
   return (
     <article className={styles.post}>
@@ -97,7 +104,11 @@ export function Post({ author, content, publishedAt }: PostProps) {
 
       <div className={styles.commentList}>
         {comments.map((comment) => {
-          return <Comment key={comment} content={comment} />
+          return <Comment
+            key={comment}
+            content={comment}
+            onDeleteComment={deleteComment}
+          />
         })}
       </div>
 
